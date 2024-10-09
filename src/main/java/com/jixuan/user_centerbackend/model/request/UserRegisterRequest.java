@@ -1,4 +1,4 @@
-package com.jixuan.user_centerbackend.model.domain.request;
+package com.jixuan.user_centerbackend.model.request;
 
 import lombok.Data;
 

@@ -1,11 +1,15 @@
 package com.jixuan.user_centerbackend.service;
 
+import com.baomidou.mybatisplus.core.toolkit.Assert;
 import com.jixuan.user_centerbackend.model.domain.User;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import javax.annotation.Resource;
+import java.lang.reflect.Array;
+import java.util.Arrays;
+import java.util.List;
 
 @SpringBootTest
 public class UserServiceTest {
@@ -65,5 +69,12 @@ public class UserServiceTest {
         userAccount = "zhangjixuan";
         result = userService.userRegister(userAccount, userPassword, checkPassword);
         Assertions.assertNotEquals(-1, result);
+    }
+
+    @Test
+    public void searchByTags() {
+        List<String> tagNameList = Arrays.asList("java", "python");
+        List<User> userList = userService.searchUsersByTags(tagNameList);
+        Assertions.assertNotNull(userList);
     }
 }

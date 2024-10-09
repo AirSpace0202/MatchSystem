@@ -3,7 +3,7 @@ package com.jixuan.user_centerbackend.common;
 
 /**
  * 返回工具类，在不同场景下能够创建相同的响应结果
- * @author jaychou
+ * @author JxZhang
  */
 public class ResultUtils {
 

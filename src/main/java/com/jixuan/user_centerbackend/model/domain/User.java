@@ -55,6 +55,11 @@ public class User implements Serializable {
     private String email;
 
     /**
+     * 标签列表 json
+     */
+    private String tags;
+
+    /**
      * 状态
      */
     private Integer userStatus;
@@ -107,7 +112,8 @@ public class User implements Serializable {
             && (this.getCreateTime() == null ? other.getCreateTime() == null : this.getCreateTime().equals(other.getCreateTime()))
             && (this.getUpdateTime() == null ? other.getUpdateTime() == null : this.getUpdateTime().equals(other.getUpdateTime()))
             && (this.getIsDelete() == null ? other.getIsDelete() == null : this.getIsDelete().equals(other.getIsDelete()))
-            && (this.getUserRole() == null ? other.getUserRole() == null : this.getUserRole().equals(other.getUserRole()));
+            && (this.getTags() == null ? other.getTags() == null : this.getTags().equals(other.getTags()));
+
     }
 
     @Override
@@ -127,6 +133,7 @@ public class User implements Serializable {
         result = prime * result + ((getUpdateTime() == null) ? 0 : getUpdateTime().hashCode());
         result = prime * result + ((getIsDelete() == null) ? 0 : getIsDelete().hashCode());
         result = prime * result + ((getUserRole() == null) ? 0 : getUserRole().hashCode());
+        result = prime * result + ((getTags() == null ? 0 : getTags().hashCode()));
         return result;
     }
 
@@ -149,6 +156,7 @@ public class User implements Serializable {
         sb.append(", updateTime=").append(updateTime);
         sb.append(", isDelete=").append(isDelete);
         sb.append(", userRole=").append(userRole);
+        sb.append(", tags=").append(tags);
         sb.append(", serialVersionUID=").append(serialVersionUID);
         sb.append("]");
         return sb.toString();
