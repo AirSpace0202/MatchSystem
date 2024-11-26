@@ -42,7 +42,7 @@ public class PreCacheJob {
     public void doCacheRecommendUser() {
         RLock lock = redissonClient.getLock("jixuan:precachejob:docache:lock");
         try {
-            // 只有一个线程能获取到锁，参数中第一个为等待时间，表示线程多久进行一次抢锁，第二个参数为锁的过期时间，设为 -1 表示利用看门狗机制进行自动续期
+            // 只有一个线程能获取到锁，参数中第一个为等待时间，表示线程多久进行一次抢锁，设为 0 表示只抢一次锁，第二个参数为锁的过期时间，设为 -1 表示利用看门狗机制进行自动续期
             if (lock.tryLock(0, -1, TimeUnit.MILLISECONDS)) {
                 for (Long userId: mainUserList) {
                     QueryWrapper<User> queryWrapper = new QueryWrapper<>();

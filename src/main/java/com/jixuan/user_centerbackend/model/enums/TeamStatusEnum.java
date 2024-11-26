@@ -17,11 +17,12 @@ public enum TeamStatusEnum {
         if (value == null) {
             return null;
         }
+        // values 方法返回一个包含所有枚举常量的数组
         TeamStatusEnum[] values = TeamStatusEnum.values();
         // 遍历所有枚举常量
         for (TeamStatusEnum teamStatusEnum : values) {
             if (teamStatusEnum.getValue() == value) {
-                return teamStatusEnum;
+                return teamStatusEnum;          // PUBLIC / PRIVATE / SECRET
             }
         }
         return null;

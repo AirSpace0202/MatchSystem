@@ -187,6 +187,7 @@ public class TeamServiceImpl extends ServiceImpl<TeamMapper, Team>
             if (statusEnum == null) {
                 statusEnum = TeamStatusEnum.PUBLIC;
             }
+            // 只有管理员能看到私密房间
             if (!isAdmin && statusEnum.equals(TeamStatusEnum.PRIVATE)) {
                 throw new BusinessException(ErrorCode.NO_AUTH, "权限不足");
             }
@@ -358,6 +359,7 @@ public class TeamServiceImpl extends ServiceImpl<TeamMapper, Team>
         queryUserTeam.setTeamId(teamId);
         QueryWrapper<UserTeam> queryWrapper = new QueryWrapper<>(queryUserTeam);
         long count = userTeamService.count(queryWrapper);
+        // 获取 user - team 中的数据量判断当前用户是否加入队伍
         if (count == 0) {
             throw new BusinessException(ErrorCode.PARAMS_ERROR, "用户未加入队伍");
         }
@@ -382,7 +384,7 @@ public class TeamServiceImpl extends ServiceImpl<TeamMapper, Team>
                 if (CollectionUtils.isEmpty(userTeamList) || userTeamList.size() <= 1) {
                     throw new BusinessException(ErrorCode.SYSTEM_ERROR);
                 }
-                // 获取队长之后下一个队员的 id
+                // 根据索引获取队长之后下一个队员的 id
                 UserTeam nextUserTeam = userTeamList.get(1);
                 Long nextTeamLeaderId = nextUserTeam.getUserId();
                 // 更新当前队伍的队长
@@ -395,7 +397,7 @@ public class TeamServiceImpl extends ServiceImpl<TeamMapper, Team>
                 }
              }
         }
-        // 删除当前队长信息
+        // 删除当前用户信息
         return userTeamService.remove(queryWrapper);
     }
 

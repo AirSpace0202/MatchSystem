@@ -133,8 +133,9 @@ public class TeamController {
         QueryWrapper<UserTeam> userTeamJoinQueryWrapper = new QueryWrapper<>();
         userTeamJoinQueryWrapper.in("teamId", teamIdList);
         List<UserTeam> userTeamList = userTeamService.list(userTeamJoinQueryWrapper);
-        // 队伍 id => 加入这个队伍的用户列表
+        // teamId => List<UserTeam>
         Map<Long, List<UserTeam>> teamIdUserTeamList = userTeamList.stream().collect(Collectors.groupingBy(UserTeam::getTeamId));
+        // 设置已加入人数
         teamList.forEach(team -> {
             team.setHasJoinNum(teamIdUserTeamList.getOrDefault(team.getId(), new ArrayList<>()).size());
         });

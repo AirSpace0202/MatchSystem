@@ -16,7 +16,7 @@ public class TeamUserVO implements Serializable {
     @Serial
     private static final long serialVersionUID = -2672620997521180283L;
     /**
-     * id
+     * 队伍 id
      */
     private Long id;
 

@@ -87,6 +87,9 @@ public class UserController {
 
         Object userObj = request.getSession().getAttribute(USER_LOGIN_STATE);           // 获取当前用户登录态并进行数据类型转换
         User currentUser = (User) userObj;
+        if(currentUser == null) {
+            throw new BusinessException(ErrorCode.PARAMS_ERROR, "当前未登录");
+        }
         long userId = currentUser.getId();              // 通过 id 进行数据库查询，查询出当前用户信息并返回脱敏后的用户信息
         User user = userService.getById(userId);
 

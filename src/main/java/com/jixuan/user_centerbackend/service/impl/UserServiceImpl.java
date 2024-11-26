@@ -69,7 +69,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
             throw new BusinessException(ErrorCode.PARAMS_ERROR);
         }
         if (!userPassword.equals(checkPassword)) {
-            throw new BusinessException(ErrorCode.PARAMS_ERROR);
+            throw new BusinessException(ErrorCode.PARAMS_ERROR, "两次输入密码不相同");
         }
         // 账户不能重复
         QueryWrapper<User> queryWrapper = new QueryWrapper<>();
@@ -160,7 +160,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
     @Override
     public List<User> searchUsersByTags(List<String> tagNameList) {
         if (CollectionUtils.isEmpty(tagNameList)) {
-            throw new BusinessException(ErrorCode.PARAMS_ERROR);
+            throw new BusinessException(ErrorCode.PARAMS_ERROR, "标签列表为空");
         }
         // 1、先查询所有用户，查询出的结果会加载到内存中
         QueryWrapper<User> queryWrapper = new QueryWrapper<>();
@@ -211,7 +211,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
 
     @Override
     public List<User> matchUsers(long num, User loginUser) {
-        // 只在有标签的用户列表中循环判断，同时只查需要的数据(id, tags)
+        // 只在有标签的用户列表中循环判断，同时只查需要的数据(id, tags)，同时 tags 不为空
         QueryWrapper<User> queryWrapper = new QueryWrapper<>();
         queryWrapper.select("id", "tags");
         queryWrapper.isNotNull("tags");
@@ -219,7 +219,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
         String tags = loginUser.getTags();
         Gson gson = new Gson();
         List<String> tagList = gson.fromJson(tags, new TypeToken<List<String>>() {}.getType());
-        // 将用户列表的下标 => 相似度进行排序
+        // 将用户列表的用户 => 相似度进行排序
         List<Pair<User, Long>> list = new ArrayList<>();
         // 依次计算所有用户和当前用户的相似度
         for (User user : userList) {
@@ -234,22 +234,23 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
             long distance = AlgorithmUtils.minDistance(tagList, userTagList);
             list.add(new Pair<>(user, distance));
         }
-        // 按编辑距离从小到大排序
+        // 按编辑距离从小到大排序 user => distance
         List<Pair<User, Long>> topUserPairList = list.stream()
                 .sorted((a, b) -> (int) (a.getValue() - b.getValue()))
                 .limit(num)
                 .collect(Collectors.toList());
-        // 原本顺序的 userId 列表
-        List<Long> userIdList =  topUserPairList.stream().map(pair -> pair.getKey().getId()).collect(Collectors.toList());
+        // 按照 distance 排序后的 userId 列表
+        List<Long> userIdList = topUserPairList.stream().map(pair -> pair.getKey().getId()).collect(Collectors.toList());
         QueryWrapper<User> userQueryWrapper = new QueryWrapper<>();
         userQueryWrapper.in("id", userIdList);
-
-        Map<Long, List<User>> userIdUserListMap =  this.list(userQueryWrapper)
+        // id => List<User>
+        Map<Long, List<User>> userIdUserListMap = this.list(userQueryWrapper)
                 .stream()
                 .map(this::getSafetyUser)
                 .collect(Collectors.groupingBy(User::getId));
         List<User> finalUserList = new ArrayList<>();
-        for (Long userId: userIdList) {
+        // 由于每个 id 只对应一个用户，所以通过 id 获取之后直接 get(0) 就行
+        for (Long userId : userIdList) {
             finalUserList.add(userIdUserListMap.get(userId).get(0));
         }
         return finalUserList;
@@ -279,7 +280,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
     private List<User> searchUsersByTagsBySQL(List<String> tagNameList) {
 
         if (CollectionUtils.isEmpty(tagNameList)) {
-            throw new BusinessException(ErrorCode.PARAMS_ERROR);    // 参数错误
+            throw new BusinessException(ErrorCode.PARAMS_ERROR, "标签列表为空");    // 参数错误
         }
         QueryWrapper<User> queryWrapper = new QueryWrapper<>();     // 进行数据库查询
         // 拼接 and 查询，根据 like 进行模糊查询，不断叠加 queryWrapper

@@ -1,0 +1,27 @@
+spring:
+  application:
+    name: user_center-backend
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    username: root
+    password: zhang2004
+    url: jdbc:mysql://localhost:3306/user_center?serverTimezone=Asia/Shanghai
+  session:
+    timeout: 86400                                # session 设置失效时间为一天（86400 秒）
+    store-type: redis                         # 存储在 redis 中
+  mvc:
+    pathmatch:
+      matching-strategy: ANT_PATH_MATCHER
+  # redis 配置
+  redis:
+    port: 6379
+    host: localhost
+    database: 1
+
+server:
+  port: 8090
+  servlet:
+    context-path: /api
+    session:
+      cookie:
+        domain: localhost
