@@ -29,7 +29,7 @@ import static com.jixuan.user_centerbackend.constant.UserConstant.USER_LOGIN_STA
 
 @RestController
 @RequestMapping("/user")
-@CrossOrigin(origins = { "http://localhost:5173" }, allowCredentials = "true")
+@CrossOrigin(origins = { "http://localhost:3000", "http://localhost:5173", "https://match-system-frontend-lsvctc0g8-airspaces-projects-1a65db43.vercel.app/" }, allowCredentials = "true")
 @Slf4j
 public class UserController {
 
